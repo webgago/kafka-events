@@ -16,7 +16,7 @@ jobs:
           command: bundle check || bundle install
       - run:
           name: Run Tests
-          command: bundle exec spec
+          command: bundle exec rspec
       - store_artifacts:
           path: coverage
 
