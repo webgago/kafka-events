@@ -11,11 +11,6 @@ module Kafka
 
       option :event, Types.Instance(Base), default: -> { klass.headers(headers).payload(params).build }
 
-      def self.new(*args, **kwargs)
-        # Make IDEs think *args are fine for initialize
-        super
-      end
-
       def perform
         validate! event.call
       end
