@@ -1,8 +1,10 @@
 # Kafka::Events
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/kafka/events`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+[![Gem Version](https://badge.fury.io/rb/kafka-events.svg)](https://badge.fury.io/rb/kafka-events)
+[![Build Status](https://travis-ci.com/abhishekkr/kafka-events.svg?branch=main)](https://travis-ci.com/abhishekkr/kafka-events)
+[![codecov](https://codecov.io/gh/abhishekkr/kafka-events/branch/main/graph/badge.svg?token=ZQZQZQZQZQ)](https://codecov.io/gh/abhishekkr/kafka-events)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0b9b0b0b0b0b0b0b0b0b/maintainability)](https://codeclimate.com/github/webgago/kafka-events/maintainability)
+[![License](https://img.shields.io/github/license/webgago/kafka-events)]
 
 ## Installation
 
