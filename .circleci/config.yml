@@ -17,6 +17,8 @@ jobs:
       - run:
           name: Run Tests
           command: bundle exec rspec
+      - codecov/upload:
+          file: tmp/coverage/.resultset.json
       - store_artifacts:
           path: tmp/coverage
 
