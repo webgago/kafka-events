@@ -18,7 +18,7 @@ jobs:
           name: Run Tests
           command: bundle exec rspec
       - store_artifacts:
-          path: coverage
+          path: tmp/coverage
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
@@ -26,9 +26,4 @@ workflows:
   build:
     jobs:
       - build
-      - codecov/upload:
-          requires:
-            - build
-          filters:
-            branches:
-              only: master
+      - codecov/upload
