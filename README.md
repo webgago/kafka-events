@@ -3,8 +3,8 @@
 [![Gem Version](https://badge.fury.io/rb/kafka-events.svg)](https://badge.fury.io/rb/kafka-events)
 [![Build Status](https://travis-ci.com/abhishekkr/kafka-events.svg?branch=main)](https://travis-ci.com/abhishekkr/kafka-events)
 [![codecov](https://codecov.io/gh/abhishekkr/kafka-events/branch/main/graph/badge.svg?token=ZQZQZQZQZQ)](https://codecov.io/gh/abhishekkr/kafka-events)
-[![Maintainability](https://api.codeclimate.com/v1/badges/0b9b0b0b0b0b0b0b0b0b/maintainability)](https://codeclimate.com/github/webgago/kafka-events/maintainability)
-[![License](https://img.shields.io/github/license/webgago/kafka-events)]
+[![Maintainability](https://api.codeclimate.com/v1/badges/60b75840d88b7646bd73/maintainability)](https://codeclimate.com/github/webgago/kafka-events/maintainability)
+[![License](https://img.shields.io/github/license/webgago/kafka-events)](https://github.com/webgago/kafka-events/blob/main/LICENSE)
 
 ## Installation
 
