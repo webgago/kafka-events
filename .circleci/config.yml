@@ -26,3 +26,9 @@ workflows:
   build:
     jobs:
       - build
+      - codecov/upload:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
