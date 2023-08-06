@@ -2,15 +2,18 @@
 
 require "simplecov"
 require "simplecov-lcov"
+require "simplecov_json_formatter"
+require "simplecov/formatter/multi_formatter"
 
 SimpleCov.root File.expand_path("../..", __dir__)
 SimpleCov.coverage_dir "coverage"
 
-if ENV["CI"]
-  SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
-  SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
-end
+SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
 
-SimpleCov.start do
-  add_filter "/spec/"
-end
+SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
+  SimpleCov::Formatter::HTMLFormatter,
+  SimpleCov::Formatter::LcovFormatter,
+  SimpleCov::Formatter::JSONFormatter
+])
+
+SimpleCov.start
