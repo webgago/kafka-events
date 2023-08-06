@@ -9,13 +9,31 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/ruby:2.7.7-node
+      - image: cimg/ruby:2.7-node
     steps:
       - checkout
       - ruby/install-deps
-      - ruby/rspec-test
+  checking:
+    docker:
+      - image: cimg/ruby:2.7-node
+    steps:
+      - checkout
+      - ruby/install-deps
+      - ruby/rubocop-check:
+        format: progress
+        label: Inspecting with Rubocop
+  test:
+    docker:
+      - image: cimg/ruby:2.7-node
+    steps:
+      - checkout
+      - ruby/install-deps
+      - ruby/rspec-test:
+          include: spec/**/*_spec.rb
+      - store_test_results:
+          path: /tmp/test-results/rspec/result.xml
       - coveralls/upload:
-          path_to_lcov: ./coverage/lcov/kafka-events-gem.lcov
+          path_to_lcov: ./coverage/lcov/project.lcov
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
@@ -23,3 +41,7 @@ workflows:
   build_and_test:
     jobs:
       - build
+      - checking
+      - test:
+          requires:
+            - build
