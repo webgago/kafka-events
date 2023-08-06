@@ -2,7 +2,7 @@
 
 RSpec.describe Kafka::Events::BuilderInterface do
   subject(:event_class) do
-    Class.new(TestEvent) do
+    build_event_class(TestEvent, "child.test.event") do
       context_schema do
         attribute :instance, Kafka::Events::Types::Integer
       end

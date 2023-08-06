@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Kafka::Events::Job do
-  subject(:job) do
-    described_class.new(
-      klass: event_class, params: params, logger: Logger.new("/dev/null")
-    )
-  end
+  subject(:job) { described_class.new(klass: event_class, params: params) }
 
   let(:service_class) do
     returning = actual
@@ -21,12 +17,13 @@ RSpec.describe Kafka::Events::Job do
     expected = self.expected
     optional = self.optional
     service_class = self.service_class
-    Class.new(TestEvent) do
+    build_event_class(TestEvent, "child.test.event") do
       expected.each { |e| produces(e) }
       optional.each { |e| produces(e, optional: true) }
       service service_class
     end
   end
+
   let(:params) { { foo: 1, bar: "" } }
 
   describe "#perform" do
@@ -47,7 +44,7 @@ RSpec.describe Kafka::Events::Job do
       end
 
       context "when returning wrong type" do
-        let(:actual) { [Class.new(TestEvent).create(foo: 1, bar: "")] }
+        let(:actual) { [build_event_class(TestEvent, "wrong.test.event").create(foo: 1, bar: "")] }
 
         it "validates the produced events" do
           expect { perform }.to raise_error(Kafka::Events::MustProduceEventError)
@@ -58,7 +55,7 @@ RSpec.describe Kafka::Events::Job do
         let(:actual) do
           [
             TestEvent.create(foo: 1, bar: ""),
-            Class.new(TestEvent).create(foo: 1, bar: "")
+            build_event_class(TestEvent, "wrong.test.event").create(foo: 1, bar: "")
           ]
         end
 
@@ -75,7 +72,7 @@ RSpec.describe Kafka::Events::Job do
         end
 
         it "returns the produced events" do
-          expect(perform).to all(be_a(TestEvent))
+          expect(perform).to all(be_a(Kafka::Events::KafkaMessage))
         end
       end
     end
@@ -96,7 +93,7 @@ RSpec.describe Kafka::Events::Job do
       end
 
       context "when returning wrong type" do
-        let(:actual) { Class.new(TestEvent).create(foo: 1, bar: "") }
+        let(:actual) { build_event_class(TestEvent, "wrong.test.event").create(foo: 1, bar: "") }
 
         it "validates the produced events" do
           expect { perform }.to raise_error(Kafka::Events::UnexpectedEventProducedError)
@@ -120,7 +117,7 @@ RSpec.describe Kafka::Events::Job do
       end
 
       context "when returning wrong type" do
-        let(:actual) { [Class.new(TestEvent).create(foo: 1, bar: "")] }
+        let(:actual) { [build_event_class(TestEvent, "wrong.test.event").create(foo: 1, bar: "")] }
 
         it "validates the produced events" do
           expect { perform }.to raise_error(Kafka::Events::UnexpectedEventProducedError)
@@ -135,7 +132,7 @@ RSpec.describe Kafka::Events::Job do
         end
 
         it "returns the produced events" do
-          expect(perform).to all(be_a(TestEvent))
+          expect(perform).to all(be_a(Kafka::Events::KafkaMessage))
         end
       end
     end

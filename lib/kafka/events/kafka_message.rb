@@ -5,9 +5,11 @@ module Kafka
     class KafkaMessage < Dry::Struct
       attribute :value, Types::Hash
       attribute :topic, Types::EventTopic
-      attribute :headers, KafkaHeaders::Type
-      attribute :partition, Types::Integer.default(-1)
-      attribute? :key, Types::Coercible::String.optional
+      attribute? :headers, KafkaHeaders::Type
+      attribute? :partition, Types::Integer
+      attribute? :partition_key, Types::Coercible::String
+      attribute? :key, Types::Coercible::String
+      attribute? :timestamp, (Types::Integer || Types::Time)
 
       # Convert to WaterDrop message
       # @example
@@ -18,11 +20,13 @@ module Kafka
       def to_waterdrop
         {
           payload: value.to_json,
-          key: key.presence || SecureRandom.uuid,
+          key: key,
           topic: topic,
           headers: headers.to_h,
-          partition: partition
-        }
+          partition: partition,
+          partition_key: partition_key,
+          timestamp: timestamp
+        }.compact
       end
     end
   end

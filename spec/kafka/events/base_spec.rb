@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Kafka::Events::Base do
-  subject(:event_class) { Class.new(TestEvent) }
+  subject(:event_class) { build_event_class(TestEvent, "child.test.event") }
 
   let(:payload) { { foo: 1, bar: "" } }
   let(:headers) { { special: true } }
@@ -50,7 +50,7 @@ RSpec.describe Kafka::Events::Base do
     context "when type not defined" do
       around do |ex|
         type = event_class.type
-        event_class.type(nil)
+        event_class.type("")
         ex.run
         event_class.type(type)
       end
@@ -181,10 +181,10 @@ RSpec.describe Kafka::Events::Base do
   end
 
   describe ".type" do
-    it { expect(event_class.type).to eq("test.event") }
+    it { expect(event_class.type).to eq("child.test.event") }
 
     context "when type is not set" do
-      before { event_class.type(nil) }
+      before { event_class.type("") }
 
       it "raises SchemaValidationError" do
         expect { event_class.create(**payload) }
@@ -208,7 +208,7 @@ RSpec.describe Kafka::Events::Base do
 
   describe ".produces" do
     subject(:event_class) do
-      Class.new(TestEvent) do
+      build_event_class(TestEvent, "child.test.event") do
         produces TestEvent
 
         def call
@@ -217,6 +217,9 @@ RSpec.describe Kafka::Events::Base do
       end
     end
 
-    it { expect(event_class.topic).to eq("test_topic") }
+    it do
+      expect(event_class.allowed_events)
+        .to contain_exactly({ klass: TestEvent, optional: false })
+    end
   end
 end

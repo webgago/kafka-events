@@ -21,20 +21,26 @@ module Kafka
       # @param [Class<Kafka::Events::Base>] base
       def self.extended(base)
         super
-        base.defines :topic, :type, :key_proc
+        base.defines :topic, :key_proc
         base.defines :partitioner_proc
         base.defines :service
         base.defines :payload_proc
         base.defines :rules_proc
-        base.defines :allowed_events
         # bypass partitioner and allow kafka to choose partition
         base.partitioner_proc(proc { -1 })
         base.rules_proc(proc {})
         base.key_proc(proc {})
       end
 
-      attr_reader :abstract
+      attr_reader :abstract, :allowed_events
       alias abstract? abstract
+
+      def type(type = nil)
+        return @type if type.nil?
+
+        Job.defined_events[type] = self
+        @type = type
+      end
 
       def abstract!
         @abstract = true
@@ -43,8 +49,7 @@ module Kafka
       def inherited(klass)
         super
         klass.context
-        klass.allowed_events([])
-        Job.events << klass unless klass.abstract?
+        klass.instance_variable_set(:@allowed_events, [])
       end
 
       def const_missing(sym)

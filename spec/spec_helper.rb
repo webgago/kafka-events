@@ -19,6 +19,7 @@
 require "bundler/setup"
 Bundler.setup
 
+require_relative "support/simplecov"
 require "kafka/events"
 require "pry-byebug"
 
