@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Kafka::Events::ClassInterface do
-  subject(:event_class) { Class.new(TestEvent) }
+  subject(:event_class) { build_event_class(TestEvent, "child.test.event") }
 
   let(:event) { event_class[foo: 1, bar: ""] }
 

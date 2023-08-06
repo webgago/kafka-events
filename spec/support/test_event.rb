@@ -16,8 +16,19 @@ class TestEvent < Kafka::Events::Base
   partitioner { 1 }
 end
 
+module EventClassFactory
+  def build_event_class(parent = Kafka::Events::Base, type, &block)
+    Class.new(parent) do
+      type(type)
+      instance_exec(&block) if block
+    end
+  end
+end
+
 RSpec.configure do |config|
   config.before do
-    # TestEvent.
+    TestEvent.allowed_events.clear
   end
+
+  config.include EventClassFactory
 end

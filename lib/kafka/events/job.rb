@@ -5,20 +5,28 @@ module Kafka
     class Job
       extend Dry::Initializer
 
-      mattr_accessor :events, default: []
+      mattr_accessor :defined_events, default: {}
 
-      option :type, Types::String, optional: true
-      option :klass, Types::Subclass(Kafka::Events::Base), default: -> { events.find { |e| e.type == type } }
       option :params, Types::Hash
       option :headers, Types::Hash, default: -> { {} }
+      option :type, Types::String.optional, default: -> { params&.fetch(:type, nil) }
+      option :klass, Types::Subclass(Kafka::Events::Base), default: -> { defined_events[type] }
 
       option :event, Types.Instance(Base), default: -> { klass.headers(headers).payload(params).build }
+      option :producer, Types.Interface(:call), optional: true
 
+      # @return [Array<Kafka::Events::KafkaMessage>]
       def perform
-        validate! event.call
+        kafka_messages = validate!(event.call).map(&:to_kafka)
+        produce(kafka_messages)
+        kafka_messages
       end
 
       private
+
+      def produce(events)
+        producer&.call(events)
+      end
 
       # @param [Array<Kafka::Events::Base>] produced_events
       def validate!(produced_events)

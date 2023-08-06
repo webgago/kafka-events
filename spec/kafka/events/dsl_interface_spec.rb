@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Kafka::Events::DSLInterface do
-  subject(:event_class) { Class.new(TestEvent) }
+  subject(:event_class) { build_event_class(TestEvent, "child.test.event") }
 
   let(:event) { event_class[foo: 1, bar: ""] }
 
@@ -88,7 +88,7 @@ RSpec.describe Kafka::Events::DSLInterface do
 
   describe "inheritance" do
     subject(:child_event_class) do
-      Class.new(event_class) do
+      build_event_class(event_class, "child.test.event") do
         payload_schema do
           attribute :zar, Kafka::Events::Types::String
         end
