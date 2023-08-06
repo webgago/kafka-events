@@ -20,8 +20,8 @@ jobs:
       - checkout
       - ruby/install-deps
       - ruby/rubocop-check:
-        format: progress
-        label: Inspecting with Rubocop
+          format: progress
+          label: Inspecting with Rubocop
   test:
     docker:
       - image: cimg/ruby:2.7-node
