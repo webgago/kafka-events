@@ -8,11 +8,6 @@ module Kafka
       param :event, Types.Instance(Kafka::Events::Base)
       option :events, Types::Array.of(Types.Instance(Kafka::Events::Base)), default: -> { [] }
 
-      def self.new(*args, **kwargs)
-        # Make IDEs think *args are fine for initialize
-        super
-      end
-
       def call; end
 
       protected
