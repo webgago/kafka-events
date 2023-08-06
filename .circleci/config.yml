@@ -31,7 +31,7 @@ jobs:
       - ruby/rspec-test:
           include: spec/**/*_spec.rb
       - store_test_results:
-          path: /tmp/test-results/rspec/result.xml
+          path: /tmp/test-results/rspec/results.xml
       - coveralls/upload:
           path_to_lcov: ./coverage/lcov/project.lcov
 
