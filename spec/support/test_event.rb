@@ -17,7 +17,7 @@ class TestEvent < Kafka::Events::Base
 end
 
 module EventClassFactory
-  def build_event_class(parent = Kafka::Events::Base, type, &block)
+  def build_event_class(parent, type, &block)
     Class.new(parent) do
       type(type)
       instance_exec(&block) if block

@@ -9,7 +9,7 @@ module Kafka
       attribute? :partition, Types::Integer
       attribute? :partition_key, Types::Coercible::String
       attribute? :key, Types::Coercible::String
-      attribute? :timestamp, Types::Integer || Types::Time
+      attribute? :timestamp, (Types::Integer || Types::Time)
 
       # Convert to WaterDrop message
       # @example
