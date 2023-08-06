@@ -44,6 +44,7 @@ module Kafka
         super
         klass.context
         klass.allowed_events([])
+        Job.events << klass unless klass.abstract?
       end
 
       def const_missing(sym)

@@ -24,7 +24,78 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Configuration
+
+```ruby
+  Kafka::Events.configure do |config|
+    config.base_contract_class = Events::Contract
+    config.validate_keys = false # default is true 
+    
+    # see https://dry-rb.org/gems/dry-validation/1.10/macros/
+    config.macros.register(:email_format) do
+      key.failure('not a valid email format')
+    end
+  end
+```
+
+### Defining Events
+
+```ruby
+  class Events::User::Create < Kafka::Events::Base
+    topic "users"
+    type "user.created"
+
+    service Events::Service::CreateUser
+
+    produces Events::Notification::UserCreated
+    produces Events::DripCampaign::Start, optional: true
+    
+    payload_schema do
+      attribute :email, Types::String
+      attribute :name, Types::String
+    end
+  
+    headers_schema do
+      attribute :event_id, Types::String
+      attribute :event_type, Types::String
+      attribute :event_time, Types::String
+    end
+  
+    context_schema do
+      attribute :user, Types::Instance(User)
+    end
+
+    payload do |context, payload|
+      {
+        name: context.user.name,
+        email: context.user.email,
+        **payload
+      }
+    end
+
+    rules do
+      rule(payload: :email).validate(:email_format)
+    end
+  end
+```
+
+### Creating Events
+
+```ruby
+  class Events::Service::CreateUser < Kafka::Events::Service
+    def call
+      user = User.create!(name: event.name, email: event.email)
+      produce Events::User::Created.context(user: user).headers(event_id: SecureRandom.uuid)
+      produce Events::DripCampaign::Start.context(user: user) if user.drip_campaign?
+    end
+  end
+```
+
+### Consuming Events
+
+```ruby
+  Kafka::Events::Job.new(type: "user.created", params: params, headers: headers).perform
+```
 
 ## Development
 

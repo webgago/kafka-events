@@ -5,7 +5,10 @@ module Kafka
     class Job
       extend Dry::Initializer
 
-      option :klass, Types::Subclass(Kafka::Events::Base)
+      mattr_accessor :events, default: []
+
+      option :type, Types::String, optional: true
+      option :klass, Types::Subclass(Kafka::Events::Base), default: -> { events.find { |e| e.type == type } }
       option :params, Types::Hash
       option :headers, Types::Hash, default: -> { {} }
 
