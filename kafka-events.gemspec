@@ -42,6 +42,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rubocop", "~> 1.45"
   spec.add_development_dependency "rubocop-rspec", "~> 2.22"
   spec.add_development_dependency "simplecov", "~> 0.22"
+  spec.add_development_dependency "rspec_junit_formatter", "~> 0.6"
+  spec.add_development_dependency "simplecov-lcov", "~> 0.8"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
