@@ -44,7 +44,7 @@ module Kafka
       # @param [Hash] context
       # @return [Kafka::Events::Base]
       def create(headers: {}, context: {}, **payload)
-        builder.headers(headers).context(context).payload(payload).build
+        builder.headers(headers).context(context).create(payload)
       end
 
       def [](payload = {})
