@@ -6,6 +6,7 @@ require "active_support/core_ext/module/attribute_accessors"
 
 require_relative "events/version"
 require_relative "events/errors"
+require_relative "events/helpers"
 require_relative "events/constants"
 require_relative "events/contract"
 require_relative "events/types"

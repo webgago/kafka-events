@@ -36,6 +36,12 @@ module Kafka
         tap { @payload = attributes }
       end
 
+      # @param [Hash] attributes
+      # @return [Kafka::Events::Base]
+      def create(attributes = {})
+        payload(attributes).build
+      end
+
       # @return [Kafka::Events::Base]
       def build
         @klass.abstract? && raise(NotImplementedError, "#{self} is an abstract class and cannot be instantiated.")

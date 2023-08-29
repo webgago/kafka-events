@@ -5,6 +5,7 @@ module Kafka
     # Class interface for Kafka::Events::Base
     module ClassInterface
       include Dry::Core::ClassAttributes
+      include Kafka::Events::Helpers
 
       # @!method topic
       #  @return [String]
@@ -63,16 +64,6 @@ module Kafka
 
       def contract
         @contract ||= ContractBuilder.build(schema, &rules)
-      end
-
-      def helper(name, &block)
-        define_method(name) do
-          if instance_variable_defined?("@#{name}")
-            instance_variable_get("@#{name}")
-          else
-            instance_variable_set("@#{name}", instance_exec(&block))
-          end
-        end
       end
     end
   end
