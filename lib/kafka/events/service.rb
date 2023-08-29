@@ -29,10 +29,9 @@ module Kafka
       # @return [Array<Kafka::Events::Base>] +events+ with new event
       def produce(event, headers: {}, **payload)
         return events << event if event.is_a?(Kafka::Events::Base)
+        return unless headers.present? || payload.present?
 
-        if headers.present? || payload.present?
-          events << self.event.produce(event, headers: headers, **payload)
-        end
+        events << self.event.produce(event, headers: headers, **payload)
       end
     end
   end
