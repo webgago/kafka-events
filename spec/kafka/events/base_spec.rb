@@ -78,7 +78,7 @@ RSpec.describe Kafka::Events::Base do
     context "when topic not defined" do
       around do |ex|
         topic = event_class.topic
-        event_class.topic(nil)
+        event_class.topic("")
         ex.run
         event_class.topic(topic)
       end
@@ -197,7 +197,7 @@ RSpec.describe Kafka::Events::Base do
     it { expect(event_class.topic).to eq("test_topic") }
 
     context "when topic is not set" do
-      before { event_class.topic(nil) }
+      before { event_class.topic("") }
 
       it "raises SchemaValidationError" do
         expect { event_class.create(**payload) }
