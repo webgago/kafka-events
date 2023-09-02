@@ -48,5 +48,15 @@ RSpec.describe Kafka::Events::Builder do
         expect(builder.context(instance: 1).payload(bar: "").build).to be_a(event_class)
       end
     end
+
+    context "with topic" do
+      let(:payload) { { foo: 1, bar: "" } }
+      let(:event) { builder.topic("foo").payload(payload).build }
+
+      it "returns event with new topic" do
+        expect(event).to be_a(event_class)
+        expect(event.topic).to eq("foo")
+      end
+    end
   end
 end

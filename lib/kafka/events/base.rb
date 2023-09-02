@@ -36,11 +36,6 @@ module Kafka
       end
 
       # @return [String]
-      def topic
-        self.class.topic
-      end
-
-      # @return [String]
       def type
         self.class.type
       end

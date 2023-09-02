@@ -36,6 +36,10 @@ module Kafka
         tap { @payload = attributes }
       end
 
+      def topic(topic)
+        tap { @topic = topic.presence }
+      end
+
       # @param [Hash] attributes
       # @return [Kafka::Events::Base]
       def create(attributes = {})
@@ -55,11 +59,11 @@ module Kafka
         compile_payload!(context_instance)
 
         {
-          topic: @klass.topic,
+          topic: @topic || @klass.topic,
           type: @klass.type,
           payload: @payload,
           headers: @headers
-        }
+        }.compact
       end
 
       private
@@ -89,6 +93,7 @@ module Kafka
         @headers = {}
         @context = {}
         @context_instance = nil
+        @topic = nil
       end
     end
   end
