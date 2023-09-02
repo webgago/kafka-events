@@ -3,6 +3,10 @@
 require "dry-struct"
 require "dry-validation"
 require "active_support/core_ext/module/attribute_accessors"
+require "dry/schema/extensions/struct"
+require "dry/schema/messages/abstract"
+require "dry/schema/message_compiler"
+require "dry/schema/message_compiler/visitor_opts"
 
 require_relative "events/version"
 require_relative "events/errors"

@@ -6,6 +6,13 @@ module Kafka
     module DSLInterface
       include Dry::Core::Constants
 
+      def topic(topic = nil)
+        return unless schema
+        return schema.type.name_key_map[:topic]&.value if topic.nil?
+
+        attribute?(:topic, Types::Strict::String.default(topic))
+      end
+
       def payload_schema(&block)
         define_schema(:payload, &block)
       end
