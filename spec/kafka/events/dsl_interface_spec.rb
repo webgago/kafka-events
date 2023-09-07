@@ -8,7 +8,7 @@ RSpec.describe Kafka::Events::DSLInterface do
   describe ".key" do
     it "defines key proc" do
       event_class.key(&:foo)
-      expect(event.key).to eq(event.foo.to_s)
+      expect(event.to_kafka.key).to eq(event.foo.to_s)
     end
   end
 
@@ -29,7 +29,7 @@ RSpec.describe Kafka::Events::DSLInterface do
   describe ".partitioner" do
     it "defines partitioner proc" do
       event_class.partitioner { |event| event.foo + 2 }
-      expect(event.partition).to eq(event.foo + 2)
+      expect(event.to_kafka.partition).to eq(event.foo + 2)
     end
 
     context "when partitioner is defined both as callable and a block" do
@@ -42,7 +42,7 @@ RSpec.describe Kafka::Events::DSLInterface do
     context "when partitioner is defined with a callable" do
       it "raises error" do
         event_class.partitioner(proc { |event| event.foo + 2 })
-        expect(event.partition).to eq(event.foo + 2)
+        expect(event.to_kafka.partition).to eq(event.foo + 2)
       end
     end
   end

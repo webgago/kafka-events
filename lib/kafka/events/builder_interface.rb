@@ -21,6 +21,10 @@ module Kafka
         builder.headers(headers)
       end
 
+      def set(topic: nil, key: nil, partition: nil)
+        builder.set(topic: topic, key: key, partition: partition)
+      end
+
       # Allows to omit payload and headers and wrap attributes automatically
       #
       # @example
