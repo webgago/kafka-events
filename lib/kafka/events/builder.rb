@@ -36,8 +36,12 @@ module Kafka
         tap { @payload = attributes }
       end
 
-      def topic(topic)
-        tap { @topic = topic.presence }
+      def set(topic: nil, key: nil, partition: nil)
+        tap do
+          @topic = topic.presence
+          @key = key.presence
+          @partition = partition.presence
+        end
       end
 
       # @param [Hash] attributes
@@ -60,6 +64,8 @@ module Kafka
 
         {
           topic: @topic || @klass.topic,
+          key: @key,
+          partition: @partition,
           type: @klass.type,
           payload: @payload,
           headers: @headers
@@ -94,6 +100,8 @@ module Kafka
         @context = {}
         @context_instance = nil
         @topic = nil
+        @key = nil
+        @partition = nil
       end
     end
   end

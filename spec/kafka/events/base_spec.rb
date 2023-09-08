@@ -127,7 +127,7 @@ RSpec.describe Kafka::Events::Base do
   end
 
   describe ".partitioner" do
-    subject(:partition) { event.partition }
+    subject(:partition) { event.to_kafka.partition }
 
     context "with default partitioner" do
       it { is_expected.to eq(1) }
@@ -147,23 +147,6 @@ RSpec.describe Kafka::Events::Base do
 
       it { is_expected.to eq(partitioner_proc.call(event)) }
     end
-  end
-
-  describe ".to_h" do
-    subject(:to_h) { event.to_h }
-
-    let(:event) { event_class.create(**payload) }
-
-    let(:expected_hash) do
-      {
-        value: { type: event_class.type }.merge(payload),
-        headers: { special: false },
-        topic: event_class.topic,
-        partition: 1
-      }
-    end
-
-    it { is_expected.to eq(expected_hash) }
   end
 
   context "when abstract" do
