@@ -36,6 +36,21 @@ RSpec.describe Kafka::Events::BuilderInterface do
     end
   end
 
+  describe ".set" do
+    let(:send_method) { event_class.set(key: "key", partition: 25, topic: "topic") }
+
+    it "returns builder" do
+      expect(send_method).to be_a(Kafka::Events::Builder)
+      expect(send_method).to be event_class.builder
+    end
+
+    it "assigns attributes to builder" do
+      expect(send_method.instance_variable_get("@key")).to eq("key")
+      expect(send_method.instance_variable_get("@partition")).to eq(25)
+      expect(send_method.instance_variable_get("@topic")).to eq("topic")
+    end
+  end
+
   describe ".create" do
     let(:payload) { { foo: 1, bar: "" } }
     let(:headers) { { special: false } }
