@@ -59,16 +59,11 @@ module Kafka
           partition: @partition,
           type: @klass.type,
           payload: @payload,
-          headers: headers_with_context
+          headers: @headers
         }.compact
       end
 
       private
-
-      def headers_with_context
-        context_headers = Context.get(:headers) || {}
-        @headers.merge(context_headers)
-      end
 
       def validator
         @validator ||= @klass.contract.new
