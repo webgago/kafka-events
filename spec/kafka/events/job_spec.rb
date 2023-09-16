@@ -137,17 +137,5 @@ RSpec.describe Kafka::Events::Job do
         end
       end
     end
-
-    context "when parent event defines required event" do
-      before do
-        TestEvent.produces(TestEvent)
-      end
-
-      let(:actual) { [TestEvent.create(foo: 1, bar: "")] }
-
-      it "overrides in child" do
-        expect(event_class.allowed_events).to be_empty
-      end
-    end
   end
 end

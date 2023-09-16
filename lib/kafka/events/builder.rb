@@ -18,12 +18,6 @@ module Kafka
         cleanup
       end
 
-      # @param [Hash] context
-      # @return [Kafka::Events::Builder]
-      def context(context = {})
-        tap { @context = context }
-      end
-
       # @param [Hash] headers
       # @return [Kafka::Events::Builder]
       def headers(headers = {})
@@ -54,14 +48,12 @@ module Kafka
       def build
         @klass.abstract? && raise(NotImplementedError, "#{self} is an abstract class and cannot be instantiated.")
 
-        @klass.new({ **validate.to_h, context: context_instance }.compact)
+        @klass.new({ **validate.to_h }.compact)
       ensure
         cleanup
       end
 
       def data
-        compile_payload!(context_instance)
-
         {
           topic: @topic || @klass.topic,
           key: @key,
@@ -74,22 +66,12 @@ module Kafka
 
       private
 
-      def context_instance
-        @context_instance ||= @context.empty? ? nil : @klass::Context.new(@context)
-      end
-
       def validator
         @validator ||= @klass.contract.new
       end
 
-      def compile_payload!(context)
-        return @payload if context.nil? || @klass.payload_proc.nil?
-
-        @payload = @klass.payload_proc.call(context, @payload)
-      end
-
       def validate
-        validator.call(data, @context).tap do |validation|
+        validator.call(data).tap do |validation|
           raise SchemaValidationError, validation unless validation.success?
         end
       end
@@ -97,8 +79,6 @@ module Kafka
       def cleanup
         @payload = {}
         @headers = {}
-        @context = {}
-        @context_instance = nil
         @topic = nil
         @key = nil
         @partition = nil

@@ -47,21 +47,6 @@ module Kafka
         @abstract = true
       end
 
-      def inherited(klass)
-        super
-        klass.context
-        klass.instance_variable_set(:@allowed_events, [])
-      end
-
-      def const_missing(sym)
-        case sym
-        when :Context
-          const_set :Context, Class.new(Dry::Struct)
-        else
-          super
-        end
-      end
-
       def contract
         @contract ||= ContractBuilder.build(schema, &rules)
       end

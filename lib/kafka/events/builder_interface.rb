@@ -39,10 +39,9 @@ module Kafka
       # @api public
       # @param payload [Hash] event attributes
       # @param [Hash] headers
-      # @param [Hash] context
       # @return [Kafka::Events::Base]
-      def create(headers: {}, context: {}, **payload)
-        builder.headers(headers).context(context).create(payload)
+      def create(headers: {}, **payload)
+        builder.headers(headers).create(payload)
       end
 
       def [](payload = {})

@@ -6,14 +6,6 @@ RSpec.describe Kafka::Events::Builder do
   let(:event_class) do
     build_event_class(TestEvent, "child.test.event") do
       key(&:foo)
-
-      context_schema do
-        attribute :instance, Kafka::Events::Types::Integer
-      end
-
-      payload do |context, payload|
-        { **payload, foo: context.instance }
-      end
     end
   end
 
@@ -61,12 +53,6 @@ RSpec.describe Kafka::Events::Builder do
             .to raise_error(Kafka::Events::SchemaValidationError, '[{:baz=>["baz is not allowed"]}]')
         end
       end
-    end
-
-    context "with context" do
-      let(:event) { builder.context(instance: 1).payload(bar: "").build }
-
-      it_behaves_like "correct event"
     end
 
     context "with set method" do

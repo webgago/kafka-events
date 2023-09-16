@@ -54,38 +54,6 @@ RSpec.describe Kafka::Events::DSLInterface do
     end
   end
 
-  describe ".produces" do
-    it "defines expected produced events" do
-      event_class.produces event_class
-      expect(event_class.allowed_events)
-        .to contain_exactly({ klass: event_class, optional: false })
-    end
-
-    context "when produces is defined multiple times" do
-      it "defines only first time" do
-        event_class.produces event_class
-        event_class.produces event_class, optional: true
-        expect(event_class.allowed_events)
-          .to contain_exactly({ klass: event_class, optional: false })
-      end
-    end
-
-    context "with optional true" do
-      it "defines optional expectation" do
-        event_class.produces event_class, optional: true
-        expect(event_class.allowed_events)
-          .to contain_exactly({ klass: event_class, optional: true })
-      end
-    end
-
-    context "with wrong class" do
-      it "raises error" do
-        expect { event_class.produces "Event" }
-          .to raise_error(ArgumentError, "\"Event\" is not a Kafka::Events::Base")
-      end
-    end
-  end
-
   describe "inheritance" do
     subject(:child_event_class) do
       build_event_class(event_class, "child.test.event") do

@@ -188,21 +188,4 @@ RSpec.describe Kafka::Events::Base do
       end
     end
   end
-
-  describe ".produces" do
-    subject(:event_class) do
-      build_event_class(TestEvent, "child.test.event") do
-        produces TestEvent
-
-        def call
-          nil
-        end
-      end
-    end
-
-    it do
-      expect(event_class.allowed_events)
-        .to contain_exactly({ klass: TestEvent, optional: false })
-    end
-  end
 end
