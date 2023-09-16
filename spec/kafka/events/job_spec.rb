@@ -5,8 +5,13 @@ RSpec.describe Kafka::Events::Job do
 
   let(:service_class) do
     returning = actual
+    expected = self.expected
+    optional = self.optional
 
     Class.new(Kafka::Events::Service) do
+      expected.each { |e| produces(e) }
+      optional.each { |e| produces(e, optional: true) }
+
       define_method :call do
         [returning].flatten.each { |e| produce(e) }
       end
@@ -14,12 +19,8 @@ RSpec.describe Kafka::Events::Job do
   end
 
   let(:event_class) do
-    expected = self.expected
-    optional = self.optional
     service_class = self.service_class
     build_event_class(TestEvent, "child.test.event") do
-      expected.each { |e| produces(e) }
-      optional.each { |e| produces(e, optional: true) }
       service service_class
     end
   end

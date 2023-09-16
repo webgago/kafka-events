@@ -22,17 +22,9 @@ RSpec.describe Kafka::Events::BuilderInterface do
     end
   end
 
-  describe ".context" do
-    it "returns builder" do
-      expect(event_class.context(instance: 1)).to be_a(Kafka::Events::Builder)
-      expect(event_class.context(instance: 1)).to be event_class.builder
-    end
-  end
-
   describe ".headers" do
     it "returns builder" do
       expect(event_class.headers(special: false)).to be_a(Kafka::Events::Builder)
-      expect(event_class.headers(special: false)).to be event_class.builder
     end
   end
 
@@ -41,7 +33,6 @@ RSpec.describe Kafka::Events::BuilderInterface do
 
     it "returns builder" do
       expect(send_method).to be_a(Kafka::Events::Builder)
-      expect(send_method).to be event_class.builder
     end
 
     it "assigns attributes to builder" do

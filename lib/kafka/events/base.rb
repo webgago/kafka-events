@@ -11,6 +11,7 @@ module Kafka
 
       attribute? :key, Types::Strict::String.optional.default(nil)
       attribute? :partition, Types::Strict::Integer.optional.default(nil)
+      private :key, :partition
 
       # @return [Kafka::Events::KafkaMessage]
       def to_kafka # rubocop:disable Metrics/AbcSize
@@ -34,28 +35,9 @@ module Kafka
         self.class.type
       end
 
-      # Instantiates a new service, calls it and returns resulting events
-      # @example
-      #  event.call # => [TestEvent[foo: 1, bar: "baz"]]
-      #
-      # @return [Array<Kafka::Events::Base>] resulting events
-      def call
-        service = self.service.new(self)
-        service.call
-        service.events
-      end
-
       # @return [Class<Kafka::Events::Service>]
       def service
         self.class.service
-      end
-
-      # @param [Class<Kafka::Events::Base>] klass
-      # @param [Hash] headers
-      # @param [Hash] payload
-      # @return [Kafka::Events::Base]
-      def produce(klass, headers: {}, **payload)
-        klass.headers(**headers).create(payload)
       end
 
       def method_missing(name, *args)
@@ -65,8 +47,6 @@ module Kafka
       def respond_to_missing?(name, include_private = false)
         payload.respond_to?(name, include_private) || super
       end
-
-      private :key, :partition
     end
   end
 end

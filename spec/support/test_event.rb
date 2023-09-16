@@ -26,9 +26,5 @@ module EventClassFactory
 end
 
 RSpec.configure do |config|
-  config.before do
-    TestEvent.allowed_events.clear
-  end
-
   config.include EventClassFactory
 end
