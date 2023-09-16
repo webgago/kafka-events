@@ -3,12 +3,6 @@ module Kafka
     class Service
       # Class interface for Kafka::Events::Base
       module Validation
-        def call
-          super
-          validate_events!
-          events
-        end
-
         def validate_events!
           actual = events.map(&:class)
           missing, unexpected = missing_and_unexpected_events(actual)

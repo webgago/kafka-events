@@ -6,6 +6,10 @@ RSpec.describe Kafka::Events::Builder do
   let(:event_class) do
     build_event_class(TestEvent, "child.test.event") do
       key(&:foo)
+
+      headers_schema do
+        attribute? :foo, Kafka::Events::Types::String
+      end
     end
   end
 
@@ -75,6 +79,19 @@ RSpec.describe Kafka::Events::Builder do
         let(:set_options) { { partition: 9 } }
 
         it_behaves_like "correct event", partition: 9
+      end
+    end
+
+    context "with context headers" do
+      it "merges headers with context headers" do
+        Kafka::Events::Context.with_context(headers: { foo: "bar" }) do
+          event = builder.payload(payload).build
+
+          expect(event.headers.foo).to eq("bar")
+        end
+
+        event = builder.payload(payload).build
+        expect(event.headers.foo).to be_nil
       end
     end
   end

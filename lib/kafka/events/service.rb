@@ -6,11 +6,7 @@ module Kafka
       extend Dry::Initializer
       extend Kafka::Events::Helpers
       extend ClassInterface
-
-      def self.inherited(subclass)
-        subclass.prepend(Validation) unless subclass < Validation
-        super
-      end
+      include Validation
 
       # @!attribute [r] event
       #   @return [Kafka::Events::Base] input event
