@@ -46,8 +46,14 @@ module Kafka
         resolve(CONTEXT) if key?(CONTEXT)
       end
 
-      def self.get(key)
-        current&.resolve(key)
+      def self.get(key, &block)
+        return unless key?(CONTEXT)
+
+        if block_given?
+          current.resolve(key)&.then(&block)
+        else
+          current.resolve(key)
+        end
       end
     end
   end
