@@ -19,6 +19,7 @@ module Kafka
       # @return [Array<Kafka::Events::KafkaMessage>]
       def perform
         service.call
+        service.validate_events!
         service.events.map(&:to_kafka).tap do |kafka_messages|
           produce(kafka_messages)
         end

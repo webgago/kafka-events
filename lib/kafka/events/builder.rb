@@ -15,7 +15,9 @@ module Kafka
       # @param [Class<Kafka::Events::Base>] klass
       def initialize(klass, headers: {}, payload: {})
         @klass = klass
-        cleanup
+        @topic = nil
+        @key = nil
+        @partition = nil
         @headers = headers
         @payload = payload
       end
@@ -23,13 +25,13 @@ module Kafka
       # @param [Hash] headers
       # @return [Kafka::Events::Builder]
       def headers(headers = {})
-        tap { @headers = headers }
+        tap { @headers.merge!(headers) }
       end
 
       # @param [Hash] attributes
       # @return [Kafka::Events::Builder]
       def payload(attributes = {})
-        tap { @payload = attributes }
+        tap { @payload.merge!(attributes) }
       end
 
       def set(topic: nil, key: nil, partition: nil)
@@ -50,8 +52,6 @@ module Kafka
       def build
         @klass.abstract? && raise(NotImplementedError, "#{self} is an abstract class and cannot be instantiated.")
         @klass.new({ **validate.to_h }.compact)
-      ensure
-        cleanup
       end
 
       def data
@@ -75,14 +75,6 @@ module Kafka
         validator.call(data).tap do |validation|
           raise SchemaValidationError, validation unless validation.success?
         end
-      end
-
-      def cleanup
-        @payload = {}
-        @headers = {}
-        @topic = nil
-        @key = nil
-        @partition = nil
       end
     end
   end

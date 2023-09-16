@@ -82,16 +82,12 @@ RSpec.describe Kafka::Events::Builder do
       end
     end
 
-    context "with context headers" do
+    context "with default headers" do
+      subject(:builder) { described_class.new(event_class, headers: { foo: "bar" }) }
+
       it "merges headers with context headers" do
-        Kafka::Events::Context.with_context(headers: { foo: "bar" }) do
-          event = builder.payload(payload).build
-
-          expect(event.headers.foo).to eq("bar")
-        end
-
         event = builder.payload(payload).build
-        expect(event.headers.foo).to be_nil
+        expect(event.headers.foo).to eq("bar")
       end
     end
   end

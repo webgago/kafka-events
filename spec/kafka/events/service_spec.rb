@@ -45,7 +45,8 @@ RSpec.describe Kafka::Events::Service do
       end
 
       it "returns produced events" do
-        expect { service.call }.to raise_error(Kafka::Events::UnexpectedEventProducedError)
+        service.call
+        expect { service.validate_events! }.to raise_error(Kafka::Events::UnexpectedEventProducedError)
       end
     end
 
@@ -57,7 +58,8 @@ RSpec.describe Kafka::Events::Service do
       end
 
       it "returns produced events" do
-        expect { service.call }.to raise_error(Kafka::Events::MustProduceEventError)
+        service.call
+        expect { service.validate_events! }.to raise_error(Kafka::Events::MustProduceEventError)
       end
     end
 
