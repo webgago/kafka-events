@@ -5,8 +5,8 @@ module Kafka
     # Class interface for Kafka::Events::Base
     module BuilderInterface
       # @return [Kafka::Events::Builder]
-      def builder
-        ::Kafka::Events::Builder.new(self)
+      def builder(headers: {}, payload: {})
+        ::Kafka::Events::Builder.new(self, headers: headers, payload: payload)
       end
 
       # @param [Hash] headers

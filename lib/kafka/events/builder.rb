@@ -13,9 +13,11 @@ module Kafka
       def_delegators :build, :to_h, :call, :to_kafka
 
       # @param [Class<Kafka::Events::Base>] klass
-      def initialize(klass)
+      def initialize(klass, headers: {}, payload: {})
         @klass = klass
         cleanup
+        @headers = headers
+        @payload = payload
       end
 
       # @param [Hash] headers
