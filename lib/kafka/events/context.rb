@@ -47,7 +47,7 @@ module Kafka
       end
 
       def self.get(key, &block)
-        return unless key?(CONTEXT)
+        return unless current
 
         if block_given?
           current.resolve(key)&.then(&block)
