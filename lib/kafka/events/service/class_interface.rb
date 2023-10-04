@@ -21,6 +21,11 @@ module Kafka
             self.allowed_events += [{ klass: klass, optional: optional }]
           end
         end
+
+        def call(*args, **kwargs)
+          instance = new(*args, **kwargs)
+          instance.tap(&:call)
+        end
       end
     end
   end
