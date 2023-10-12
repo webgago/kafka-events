@@ -16,10 +16,7 @@ module Kafka
           klasses.each do |klass|
             next if current.include?(klass)
 
-            if !klass.is_a?(Class) || !(klass < Kafka::Events::Base)
-              raise ArgumentError, "#{klass.inspect} is not a Kafka::Events::Base"
-            end
-
+            _ensure_argument(klass)
             self.allowed_events += [{ klass: klass, optional: optional }]
           end
         end
@@ -27,6 +24,12 @@ module Kafka
         def call(*args, **kwargs)
           instance = new(*args, **kwargs)
           instance.tap(&:call)
+        end
+
+        private def _ensure_argument(klass)
+          return unless !klass.is_a?(Class) || !(klass < Kafka::Events::Base)
+
+          raise ArgumentError, "#{klass.inspect} is not a Kafka::Events::Base"
         end
       end
     end
