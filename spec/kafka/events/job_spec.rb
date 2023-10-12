@@ -36,7 +36,7 @@ RSpec.describe Kafka::Events::Job do
     context "when producer specified" do
       subject(:job) { described_class.new(klass: event_class, params: params, producer: producer) }
 
-      let(:producer) { double(:produce) }
+      let(:producer) { double("produce") } # rubocop:disable RSpec/VerifiedDoubles
       let(:expected) { [TestEvent] }
       let(:actual) { [TestEvent.create(foo: 1, bar: "")] }
 
