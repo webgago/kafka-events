@@ -33,6 +33,34 @@ RSpec.describe Kafka::Events::Job do
     let(:optional) { [] }
     let(:expected) { [] }
 
+    context "when producer specified" do
+      subject(:job) { described_class.new(klass: event_class, params: params, producer: producer) }
+
+      let(:producer) { double(:produce) }
+      let(:expected) { [TestEvent] }
+      let(:actual) { [TestEvent.create(foo: 1, bar: "")] }
+
+      before do
+        allow(producer).to receive(:call)
+      end
+
+      it "calls producer" do
+        perform
+        expect(producer).to have_received(:call)
+      end
+    end
+
+    context "when producer is not specified" do
+      let(:producer) { double(:produce, nil?: true, call: true) }
+      let(:expected) { [TestEvent] }
+      let(:actual) { [TestEvent.create(foo: 1, bar: "")] }
+
+      it "calls producer" do
+        perform
+        expect(producer).not_to have_received(:call)
+      end
+    end
+
     context "when expecting produced events" do
       let(:expected) { [TestEvent] }
 

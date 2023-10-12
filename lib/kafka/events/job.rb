@@ -28,7 +28,9 @@ module Kafka
       private
 
       def produce(events)
-        producer&.call(events)
+        return if producer.nil?
+
+        producer.call(events)
       end
     end
   end
