@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Kafka
   module Events
     class Context
@@ -16,11 +18,9 @@ module Kafka
       class Resolver < Dry::Container::Resolver
         def call(container, key)
           item = container.fetch(key) do
-            if block_given?
-              return yield(key)
-            else
-              raise KeyError.new(%(key not found: "#{key}"), key: key, receiver: container)
-            end
+            return yield(key) if block_given?
+
+            raise KeyError.new(%(key not found: "#{key}"), key: key, receiver: container)
           end
 
           item.call

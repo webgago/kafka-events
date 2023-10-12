@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Kafka::Events::Context do
   subject(:context) { described_class }
 

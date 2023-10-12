@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Kafka::Events::Service::ClassInterface do
   subject(:service_class) do
     Class.new(Kafka::Events::Service) do
@@ -54,7 +56,7 @@ RSpec.describe Kafka::Events::Service::ClassInterface do
       it "adds once" do
         service_class.produces(TestEvent)
         service_class.produces(TestEvent)
-        expect(service_class.allowed_events).to match_array([{ klass: TestEvent, optional: false }])
+        expect(service_class.allowed_events).to contain_exactly({ klass: TestEvent, optional: false })
       end
     end
   end

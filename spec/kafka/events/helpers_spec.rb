@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe Kafka::Events::Helpers do
   let(:klass) do
     Class.new do
