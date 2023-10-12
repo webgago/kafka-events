@@ -43,11 +43,11 @@ module Kafka
       end
 
       def self.current
-        resolve(CONTEXT) if key?(CONTEXT)
+        resolve(CONTEXT)
       end
 
       def self.get(key, &block)
-        return unless current
+        return if current.nil?
 
         if block_given?
           current.resolve(key)&.then(&block)
