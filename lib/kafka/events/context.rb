@@ -3,7 +3,7 @@ module Kafka
     class Context
       extend Dry::Container::Mixin
       include Dry::Container::Mixin
-      CONTEXT = "context".freeze
+      CONTEXT = :__kafka_events_context
 
       class Registry < Dry::Container::Registry
         def call(container, key, item, options)
@@ -35,15 +35,14 @@ module Kafka
       config.resolver = Resolver.new
 
       def self.with_context(**params)
-        context = new
+        context = Thread.current[CONTEXT] ||= new
         params.each { |key, value| context.register(key, value) }
-        register(CONTEXT, context)
         yield
-        register(CONTEXT, nil)
+        Thread.current[CONTEXT] = nil
       end
 
       def self.current
-        resolve(CONTEXT) if key?(CONTEXT)
+        Thread.current[CONTEXT]
       end
 
       def self.get(key, &block)
