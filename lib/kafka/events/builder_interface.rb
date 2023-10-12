@@ -5,18 +5,12 @@ module Kafka
     # Class interface for Kafka::Events::Base
     module BuilderInterface
       # @return [Kafka::Events::Builder]
-      def builder
-        @builder ||= ::Kafka::Events::Builder.new(self)
-      end
-
-      # @param [Hash] context
-      # @return [Kafka::Events::Factory]
-      def context(context = {})
-        builder.context(context)
+      def builder(headers: {}, payload: {})
+        ::Kafka::Events::Builder.new(self, headers: headers, payload: payload)
       end
 
       # @param [Hash] headers
-      # @return [Kafka::Events::Factory]
+      # @return [Kafka::Events::Builder]
       def headers(headers = {})
         builder.headers(headers)
       end
@@ -45,14 +39,13 @@ module Kafka
       # @api public
       # @param payload [Hash] event attributes
       # @param [Hash] headers
-      # @param [Hash] context
       # @return [Kafka::Events::Base]
-      def create(headers: {}, context: {}, **payload)
-        builder.headers(headers).context(context).create(payload)
+      def create(headers: {}, **payload)
+        builder.headers(headers).create(payload)
       end
 
       def [](payload = {})
-        builder.payload(payload).build
+        builder.create(payload)
       end
     end
   end

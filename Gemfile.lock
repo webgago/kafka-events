@@ -3,6 +3,8 @@ PATH
   specs:
     kafka-events (0.1.0)
       activesupport (>= 5.0)
+      dry-container (~> 0.11)
+      dry-schema (~> 1.13)
       dry-struct (~> 1.6)
       dry-validation (~> 1.10)
 
@@ -23,6 +25,8 @@ GEM
     dry-configurable (1.0.1)
       dry-core (~> 1.0, < 2)
       zeitwerk (~> 2.6)
+    dry-container (0.11.0)
+      concurrent-ruby (~> 1.0)
     dry-core (1.0.0)
       concurrent-ruby (~> 1.0)
       zeitwerk (~> 2.6)

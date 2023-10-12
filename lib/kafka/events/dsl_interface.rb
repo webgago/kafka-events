@@ -17,35 +17,13 @@ module Kafka
         define_schema(:payload, &block)
       end
 
-      def context_schema(&block)
-        define_schema :context, optional: true, &block
-      end
-
       def headers_schema(&block)
         define_schema :headers, &block
-      end
-
-      def produces(*klasses, optional: false)
-        current = allowed_events.map { |e| e[:klass] }
-        klasses.each do |klass|
-          if !klass.is_a?(Class) || !(klass < Kafka::Events::Base)
-            raise ArgumentError, "#{klass.inspect} is not a Kafka::Events::Base"
-          end
-
-          next if current.include?(klass)
-
-          allowed_events.push({ klass: klass, optional: optional })
-        end
       end
 
       def rules(&block)
         rules_proc(block) if block_given?
         rules_proc
-      end
-
-      def payload(&block)
-        payload_proc(block) if block_given?
-        payload_proc
       end
 
       def partitioner(object = nil, &block)
@@ -63,14 +41,12 @@ module Kafka
         key_proc
       end
 
-      def define_schema(key, optional: false, &block)
-        method = optional ? :attribute? : :attribute
-
+      def define_schema(key, &block)
         if superclass.has_attribute?(key)
           # inherit payload and headers from superclass
-          send(method, key, superclass.schema.type.key(key).type, &block)
+          send(:attribute, key, superclass.schema.type.key(key).type, &block)
         else
-          send(method, key, &block)
+          send(:attribute, key, &block)
         end
       end
       private :define_schema

@@ -41,7 +41,7 @@ module Kafka
       # @return [Hash<String, Object>]
       def from_options(options, kafka_prefix: KAFKA_PREFIX, option_prefix: OPTION_PREFIX)
         headers = options.compact.transform_keys do |k|
-          header = k.to_s.sub(option_prefix, "").titleize.tr(" ", "-").sub(kafka_prefix, "")
+          header = k.to_s.sub(option_prefix, "").titleize(keep_id_suffix: true).tr(" ", "-").sub(kafka_prefix, "")
           "#{kafka_prefix}#{header}"
         end
         headers.transform_values(&:to_s)

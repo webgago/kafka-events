@@ -13,19 +13,6 @@ RSpec.describe Kafka::Events::ClassInterface do
     end
   end
 
-  describe "const_missing" do
-    it "raises error" do
-      expect { event_class::Foo }
-        .to raise_error(NameError)
-    end
-
-    context "when Context" do
-      it "raises error" do
-        expect(event_class::Context).to be < Dry::Struct
-      end
-    end
-  end
-
   describe ".contract" do
     it "returns an instance of Contract" do
       expect(event_class.contract).to be < Kafka::Events::Contract

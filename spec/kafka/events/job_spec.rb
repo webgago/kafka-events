@@ -5,8 +5,13 @@ RSpec.describe Kafka::Events::Job do
 
   let(:service_class) do
     returning = actual
+    expected = self.expected
+    optional = self.optional
 
     Class.new(Kafka::Events::Service) do
+      expected.each { |e| produces(e) }
+      optional.each { |e| produces(e, optional: true) }
+
       define_method :call do
         [returning].flatten.each { |e| produce(e) }
       end
@@ -14,12 +19,8 @@ RSpec.describe Kafka::Events::Job do
   end
 
   let(:event_class) do
-    expected = self.expected
-    optional = self.optional
     service_class = self.service_class
     build_event_class(TestEvent, "child.test.event") do
-      expected.each { |e| produces(e) }
-      optional.each { |e| produces(e, optional: true) }
       service service_class
     end
   end
@@ -31,6 +32,34 @@ RSpec.describe Kafka::Events::Job do
 
     let(:optional) { [] }
     let(:expected) { [] }
+
+    context "when producer specified" do
+      subject(:job) { described_class.new(klass: event_class, params: params, producer: producer) }
+
+      let(:producer) { double("produce") } # rubocop:disable RSpec/VerifiedDoubles
+      let(:expected) { [TestEvent] }
+      let(:actual) { [TestEvent.create(foo: 1, bar: "")] }
+
+      before do
+        allow(producer).to receive(:call)
+      end
+
+      it "calls producer" do
+        perform
+        expect(producer).to have_received(:call)
+      end
+    end
+
+    context "when producer is not specified" do
+      let(:producer) { double("producer", nil?: true, call: true) } # rubocop:disable RSpec/VerifiedDoubles
+      let(:expected) { [TestEvent] }
+      let(:actual) { [TestEvent.create(foo: 1, bar: "")] }
+
+      it "calls producer" do
+        perform
+        expect(producer).not_to have_received(:call)
+      end
+    end
 
     context "when expecting produced events" do
       let(:expected) { [TestEvent] }
@@ -134,18 +163,6 @@ RSpec.describe Kafka::Events::Job do
         it "returns the produced events" do
           expect(perform).to all(be_a(Kafka::Events::KafkaMessage))
         end
-      end
-    end
-
-    context "when parent event defines required event" do
-      before do
-        TestEvent.produces(TestEvent)
-      end
-
-      let(:actual) { [TestEvent.create(foo: 1, bar: "")] }
-
-      it "overrides in child" do
-        expect(event_class.allowed_events).to be_empty
       end
     end
   end

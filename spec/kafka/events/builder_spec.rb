@@ -7,12 +7,8 @@ RSpec.describe Kafka::Events::Builder do
     build_event_class(TestEvent, "child.test.event") do
       key(&:foo)
 
-      context_schema do
-        attribute :instance, Kafka::Events::Types::Integer
-      end
-
-      payload do |context, payload|
-        { **payload, foo: context.instance }
+      headers_schema do
+        attribute? :foo, Kafka::Events::Types::String
       end
     end
   end
@@ -63,12 +59,6 @@ RSpec.describe Kafka::Events::Builder do
       end
     end
 
-    context "with context" do
-      let(:event) { builder.context(instance: 1).payload(bar: "").build }
-
-      it_behaves_like "correct event"
-    end
-
     context "with set method" do
       let(:payload) { { foo: 1, bar: "" } }
       let(:event) { builder.set(set_options).payload(payload).build }
@@ -89,6 +79,15 @@ RSpec.describe Kafka::Events::Builder do
         let(:set_options) { { partition: 9 } }
 
         it_behaves_like "correct event", partition: 9
+      end
+    end
+
+    context "with default headers" do
+      subject(:builder) { described_class.new(event_class, headers: { foo: "bar" }) }
+
+      it "merges headers with context headers" do
+        event = builder.payload(payload).build
+        expect(event.headers.foo).to eq("bar")
       end
     end
   end
