@@ -9,12 +9,12 @@ module Kafka
 
       option :params, Types::Hash
       option :headers, Types::Hash, default: -> { {} }
-      option :type, Types::String.optional, default: -> { params&.fetch(:type, nil) }
+      option :type, Types::String.optional, default: -> { params.fetch(:type, nil) }
       option :klass, Types::Subclass(Base), default: -> { defined_events[type] }
 
       option :event, Types.Instance(Base), default: -> { klass.headers(headers).create(params) }
       option :producer, Types.Interface(:call), optional: true
-      option :service, Types.Instance(Service), default: -> { event&.service&.new(event) }
+      option :service, Types.Instance(Service), default: -> { event.service.new(event) }
 
       # @return [Array<Kafka::Events::KafkaMessage>]
       def perform

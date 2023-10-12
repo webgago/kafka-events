@@ -51,7 +51,7 @@ RSpec.describe Kafka::Events::Job do
     end
 
     context "when producer is not specified" do
-      let(:producer) { double(:produce, nil?: true, call: true) }
+      let(:producer) { double("producer", nil?: true, call: true) } # rubocop:disable RSpec/VerifiedDoubles
       let(:expected) { [TestEvent] }
       let(:actual) { [TestEvent.create(foo: 1, bar: "")] }
 

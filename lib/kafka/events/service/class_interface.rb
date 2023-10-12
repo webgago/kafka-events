@@ -26,7 +26,9 @@ module Kafka
           instance.tap(&:call)
         end
 
-        private def _ensure_argument(klass)
+        private
+
+        def _ensure_argument(klass)
           return unless !klass.is_a?(Class) || !(klass < Kafka::Events::Base)
 
           raise ArgumentError, "#{klass.inspect} is not a Kafka::Events::Base"
