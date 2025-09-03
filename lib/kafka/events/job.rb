@@ -1,16 +1,30 @@
 # frozen_string_literal: true
 
+require "concurrent"
+
 module Kafka
   module Events
     class Job
       extend Dry::Initializer
 
-      mattr_accessor :defined_events, default: {}
+      @defined_events = Concurrent::Map.new
+
+      class << self
+        attr_reader :defined_events
+
+        def register_event(type, klass)
+          defined_events[type] = klass
+        end
+
+        def reset_events!
+          defined_events.clear
+        end
+      end
 
       option :params, Types::Hash
       option :headers, Types::Hash, default: -> { {} }
       option :type, Types::String.optional, default: -> { params&.fetch(:type, nil) }
-      option :klass, Types::Subclass(Kafka::Events::Base), default: -> { defined_events[type] }
+      option :klass, Types::Subclass(Kafka::Events::Base), default: -> { self.class.defined_events[type] }
 
       option :event, Types.Instance(Base), default: -> { klass.headers(headers).payload(params).build }
       option :producer, Types.Interface(:call), optional: true
