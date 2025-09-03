@@ -27,6 +27,8 @@ end
 
 RSpec.configure do |config|
   config.before do
+    Kafka::Events::Job.reset_events!
+    Kafka::Events::Job.register_event("test.event", TestEvent)
     TestEvent.allowed_events.clear
   end
 

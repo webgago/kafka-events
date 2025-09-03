@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "activesupport", ">= 5.0"
+  spec.add_dependency "concurrent-ruby", "~> 1.0"
   spec.add_dependency "dry-struct", "~> 1.6"
   spec.add_dependency "dry-validation", "~> 1.10"
   spec.add_development_dependency "pry-byebug", "~> 3.10"

@@ -26,6 +26,16 @@ RSpec.describe Kafka::Events::Job do
 
   let(:params) { { foo: 1, bar: "" } }
 
+  describe ".register_event and .reset_events!" do
+    it "manages the event registry" do
+      described_class.reset_events!
+      described_class.register_event("foo", TestEvent)
+      expect(described_class.defined_events["foo"]).to eq(TestEvent)
+      described_class.reset_events!
+      expect(described_class.defined_events).to be_empty
+    end
+  end
+
   describe "#perform" do
     subject(:perform) { job.perform }
 

@@ -39,7 +39,7 @@ module Kafka
       def type(type = nil)
         return @type if type.nil?
 
-        Job.defined_events[type] = self
+        Job.register_event(type, self)
         @type = type
       end
 
